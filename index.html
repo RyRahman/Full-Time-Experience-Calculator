@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Full-Time Experience Calculator</title>
+  <style>
+    :root{
+      --navy:#0f172a;
+      --blue:#2563eb;
+      --blue-dark:#1d4ed8;
+      --bg:#f3f6fb;
+      --card:#ffffff;
+      --text:#172033;
+      --muted:#64748b;
+      --border:#dbe2ea;
+      --soft:#f8fafc;
+      --summary:#eef4ff;
+      --danger:#b91c1c;
+      --shadow:0 8px 24px rgba(15,23,42,.08);
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:Arial,Helvetica,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    .app-shell{
+      max-width:980px;
+      margin:0 auto;
+      padding:24px 18px 48px;
+    }
+
+    .hero{
+      background:linear-gradient(135deg,#0f172a,#1e3a8a);
+      color:white;
+      border-radius:18px;
+      padding:28px;
+      box-shadow:var(--shadow);
+      margin-bottom:20px;
+    }
+
+    .hero h1{
+      margin:0;
+      font-size:30px;
+      line-height:1.15;
+    }
+
+    .hero p{
+      margin:10px 0 0;
+      color:#dbeafe;
+      max-width:760px;
+      font-size:15px;
+      line-height:1.5;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:16px;
+      box-shadow:var(--shadow);
+      padding:20px;
+      margin-bottom:18px;
+    }
+
+    .overlap-warning{
+      display:none;
+      margin:0 0 14px;
+      padding:11px 13px;
+      border:1px solid #f59e0b;
+      background:#fffbeb;
+      color:#92400e;
+      border-radius:10px;
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .overlap-warning.show{
+      display:block;
+    }
+
+    tbody tr.overlap-row td{
+      background:#fff7ed;
+      border-top:1px solid #fdba74;
+      border-bottom:1px solid #fdba74;
+    }
+
+    tbody tr.overlap-row td:first-child{
+      border-left:3px solid #f97316;
+    }
+
+    .overlap-badge{
+      display:inline-block;
+      margin-left:7px;
+      padding:3px 7px;
+      border-radius:999px;
+      background:#ffedd5;
+      color:#9a3412;
+      font-size:10px;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.03em;
+      vertical-align:middle;
+    }
+
+    .field{
+      margin-bottom:18px;
+    }
+
+    label{
+      display:block;
+      font-weight:700;
+      font-size:13px;
+      margin-bottom:6px;
+      color:#334155;
+    }
+
+    input[type="text"]{
+      width:100%;
+      padding:12px 13px;
+      border:1px solid var(--border);
+      border-radius:10px;
+      font-size:16px;
+      background:white;
+      transition:.15s;
+    }
+
+    input[type="text"]:focus{
+      outline:none;
+      border-color:var(--blue);
+      box-shadow:0 0 0 3px rgba(37,99,235,.13);
+    }
+
+    .table-wrap{
+      overflow-x:auto;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:white;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:700px;
+    }
+
+    th,td{
+      padding:10px 11px;
+      text-align:left;
+      border-bottom:1px solid #eef2f7;
+      vertical-align:middle;
+    }
+
+    th{
+      background:#f8fafc;
+      color:#334155;
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.03em;
+      position:sticky;
+      top:0;
+      z-index:1;
+    }
+
+    tbody tr:hover{
+      background:#fafcff;
+    }
+
+    td input{
+      width:100%;
+      border:1px solid #cbd5e1;
+      border-radius:8px;
+      padding:9px 10px;
+      font-size:15px;
+    }
+
+    .duration-cell{
+      font-size:13px;
+      color:#334155;
+      font-weight:600;
+      white-space:nowrap;
+    }
+
+    .remove-btn{
+      border:none;
+      background:#fff1f2;
+      color:var(--danger);
+      border-radius:8px;
+      width:32px;
+      height:32px;
+      cursor:pointer;
+      font-size:18px;
+      line-height:1;
+    }
+
+    .remove-btn:hover{
+      background:#ffe4e6;
+    }
+
+    .button-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin:16px 0 18px;
+    }
+
+    .btn{
+      border:none;
+      border-radius:10px;
+      padding:11px 15px;
+      font-weight:700;
+      font-size:14px;
+      cursor:pointer;
+      min-height:42px;
+    }
+
+    .btn-primary{
+      background:var(--blue);
+      color:white;
+    }
+
+    .btn-primary:hover{
+      background:var(--blue-dark);
+    }
+
+    .btn-secondary{
+      background:#eef2f7;
+      color:#1e293b;
+      border:1px solid #d7dee8;
+    }
+
+    .btn-secondary:hover{
+      background:#e5eaf1;
+    }
+
+    .summary{
+      display:grid;
+      grid-template-columns:1.2fr .8fr;
+      gap:14px;
+      margin-top:4px;
+    }
+
+    .summary-card{
+      border:1px solid #cfdcff;
+      border-radius:14px;
+      background:linear-gradient(180deg,#f7faff,#eef4ff);
+      padding:18px;
+    }
+
+    .summary-label{
+      font-size:12px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      font-weight:700;
+      margin-bottom:8px;
+    }
+
+    .summary-value{
+      font-size:32px;
+      font-weight:800;
+      color:var(--navy);
+      line-height:1.1;
+    }
+
+    .summary-sub{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .secondary-summary{
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:18px;
+      background:#fff;
+    }
+
+    .secondary-summary .value{
+      font-size:20px;
+      font-weight:800;
+      color:var(--navy);
+      margin-top:8px;
+      word-break:break-word;
+    }
+
+    .status{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .app-footer{
+      text-align:center;
+      margin-top:24px;
+      font-size:13px;
+      color:var(--muted);
+      letter-spacing:.02em;
+    }
+
+    .print-heading{
+      display:none;
+    }
+
+    @media(max-width:720px){
+      .app-shell{
+        padding:12px 10px 30px;
+      }
+
+      .hero{
+        padding:20px;
+      }
+
+      .hero h1{
+        font-size:24px;
+      }
+
+      .summary{
+        grid-template-columns:1fr;
+      }
+
+      .button-row{
+        flex-direction:column;
+      }
+
+      .btn{
+        width:100%;
+      }
+    }
+
+    @media print{
+      body{
+        background:white;
+      }
+
+      .app-shell{
+        max-width:none;
+        padding:0;
+      }
+
+      .hero,
+      .overlap-warning,
+      .button-row,
+      .status,
+      .remove-col,
+      .remove-btn{
+        display:none!important;
+      }
+
+      .card{
+        box-shadow:none;
+        border:none;
+        padding:0;
+      }
+
+      .print-heading{
+        display:block;
+        margin-bottom:18px;
+      }
+
+      .print-heading h1{
+        margin:0 0 6px;
+        font-size:24px;
+      }
+
+      .print-heading p{
+        margin:0;
+        color:#444;
+        font-size:13px;
+      }
+
+      input{
+        border:none!important;
+        padding:0!important;
+        background:transparent!important;
+      }
+
+      table{
+        min-width:0;
+      }
+
+      th,td{
+        border:1px solid #000;
+      }
+
+      th{
+        position:static;
+        background:white;
+        color:#000;
+      }
+
+      .summary-card,
+      .secondary-summary{
+        background:white;
+        border:1px solid #000;
+      }
+
+      .app-footer{
+        margin-top:20px;
+        font-size:11px;
+        color:#555;
+      }
+    }
+  </style>
+
+<!--[if gte mso 9]><xml>
+<mso:CustomDocumentProperties>
+<mso:REQUEST_x0020_TYPE_x003f_ msdt:dt="string">Calc</mso:REQUEST_x0020_TYPE_x003f_>
+</mso:CustomDocumentProperties>
+</xml><![endif]-->
+</head>
+<body>
+<div class="app-shell">
+
+  <section class="hero">
+    <h1>Full-Time Experience Calculator</h1>
+    <p>
+      Calculate total full-time service across multiple employment periods and export a clean summary for review or recordkeeping.
+    </p>
+  </section>
+
+  <section class="card">
+
+    <div class="print-heading">
+      <h1>Full-Time Experience Summary</h1>
+      <p>Generated from the Full-Time Experience Calculator</p>
+    </div>
+
+    <div class="field">
+      <label for="name">Employee Name</label>
+      <input id="name" type="text" placeholder="e.g. Jane Doe" autocomplete="off">
+    </div>
+
+    <div id="overlapWarning" class="overlap-warning" role="alert">
+      Overlapping employment periods detected. Highlighted rows contain dates that overlap with another row.
+    </div>
+
+    <div class="table-wrap">
+      <table id="experienceTable">
+        <thead>
+          <tr>
+            <th style="width:30%">Start Date</th>
+            <th style="width:30%">End Date</th>
+            <th style="width:30%">Service Duration</th>
+            <th class="remove-col" style="width:10%">Remove</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+
+    <div class="button-row">
+      <button id="addRowBtn" class="btn btn-secondary" type="button">+ Add Row</button>
+      <button id="printBtn" class="btn btn-primary" type="button">Export PDF / Print</button>
+      <button id="clearBtn" class="btn btn-secondary" type="button">Clear</button>
+    </div>
+
+    <div class="summary">
+      <div class="summary-card">
+        <div class="summary-label">Total Full-Time Experience</div>
+        <div id="totalDuration" class="summary-value">0 Months</div>
+        <div class="summary-sub">Sum of all valid employment periods. Overlaps are highlighted for review.</div>
+      </div>
+
+      <div class="secondary-summary">
+        <div class="summary-label">Employee</div>
+        <div id="employeeSummary" class="value">Not entered</div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="app-footer">
+    &copy; 2026 Ryan Rahman. All rights reserved.
+  </footer>
+</div>
+
+<script>
+(() => {
+  const rowsEl = document.getElementById("rows");
+  const nameEl = document.getElementById("name");
+  const totalEl = document.getElementById("totalDuration");
+  const employeeSummaryEl = document.getElementById("employeeSummary");
+  const overlapWarningEl = document.getElementById("overlapWarning");
+
+  function escapeHtml(value){
+    return String(value)
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;")
+      .replace(/'/g,"&#039;");
+  }
+
+  function parseMonthYear(value){
+    if(!value) return null;
+    const match=String(value).trim().match(/^(\d{1,2})\s*[\/\-]\s*(\d{4})$/);
+    if(!match) return null;
+
+    const month=Number(match[1]);
+    const year=Number(match[2]);
+
+    if(month<1||month>12||year<1900||year>9999) return null;
+    return{month,year};
+  }
+
+  function monthsBetween(start,end){
+    return (end.year-start.year)*12+(end.month-start.month);
+  }
+
+  function formatYearsMonths(totalMonths){
+    const years=Math.floor(totalMonths/12);
+    const months=totalMonths%12;
+    const parts=[];
+
+    if(years>0) parts.push(`${years} Year${years===1?"":"s"}`);
+    if(months>0) parts.push(`${months} Month${months===1?"":"s"}`);
+
+    return parts.length?parts.join(" "):"0 Months";
+  }
+
+  function sanitizeMonthYearInput(value){
+    return value.replace(/[^\d\/\-]/g,"").slice(0,7);
+  }
+
+  function createRow(start="",end=""){
+    const tr=document.createElement("tr");
+
+    tr.innerHTML=`
+      <td><input class="start-date" type="text" inputmode="numeric" placeholder="MM/YYYY" value="${escapeHtml(start)}"></td>
+      <td><input class="end-date" type="text" inputmode="numeric" placeholder="MM/YYYY" value="${escapeHtml(end)}"></td>
+      <td class="duration-cell">0 Months</td>
+      <td class="remove-col"><button class="remove-btn" type="button" title="Remove row">&times;</button></td>
+    `;
+
+    const startInput=tr.querySelector(".start-date");
+    const endInput=tr.querySelector(".end-date");
+    const removeBtn=tr.querySelector(".remove-btn");
+
+    [startInput,endInput].forEach(input=>{
+      input.addEventListener("input",()=>{
+        input.value=sanitizeMonthYearInput(input.value);
+        recalculate();
+      });
+      input.addEventListener("change",recalculate);
+    });
+
+    removeBtn.addEventListener("click",()=>{
+      tr.remove();
+      if(!rowsEl.children.length) createRow();
+      recalculate();
+    });
+
+    rowsEl.appendChild(tr);
+  }
+
+  function getRows(){
+    return [...rowsEl.querySelectorAll("tr")].map(tr=>({
+      start:tr.querySelector(".start-date").value.trim(),
+      end:tr.querySelector(".end-date").value.trim()
+    }));
+  }
+
+  function recalculate(){
+    let totalMonths=0;
+    const tableRows=[...rowsEl.querySelectorAll("tr")];
+    const validPeriods=[];
+    const overlappingRows=new Set();
+
+    tableRows.forEach((tr,index)=>{
+      tr.classList.remove("overlap-row");
+
+      const startText=tr.querySelector(".start-date").value.trim();
+      const endText=tr.querySelector(".end-date").value.trim();
+      const durationCell=tr.querySelector(".duration-cell");
+
+      const start=parseMonthYear(startText);
+      const end=parseMonthYear(endText);
+
+      if(!start||!end){
+        durationCell.textContent=(startText||endText)?"Check date":"0 Months";
+        return;
+      }
+
+      const months=monthsBetween(start,end);
+
+      if(months<0){
+        durationCell.textContent="End before start";
+        return;
+      }
+
+      totalMonths+=months;
+      durationCell.textContent=formatYearsMonths(months);
+
+      if(months>0){
+        validPeriods.push({
+          rowIndex:index,
+          startIndex:start.year*12+(start.month-1),
+          endIndex:end.year*12+(end.month-1)
+        });
+      }
+    });
+
+    for(let i=0;i<validPeriods.length;i++){
+      for(let j=i+1;j<validPeriods.length;j++){
+        const a=validPeriods[i];
+        const b=validPeriods[j];
+        const overlaps=Math.max(a.startIndex,b.startIndex)<Math.min(a.endIndex,b.endIndex);
+        if(overlaps){
+          overlappingRows.add(a.rowIndex);
+          overlappingRows.add(b.rowIndex);
+        }
+      }
+    }
+
+    overlappingRows.forEach(index=>{
+      const tr=tableRows[index];
+      tr.classList.add("overlap-row");
+      const durationCell=tr.querySelector(".duration-cell");
+      const badge=document.createElement("span");
+      badge.className="overlap-badge";
+      badge.textContent="Overlap";
+      durationCell.appendChild(badge);
+    });
+
+    overlapWarningEl.classList.toggle("show",overlappingRows.size>0);
+    totalEl.textContent=formatYearsMonths(totalMonths);
+    employeeSummaryEl.textContent=nameEl.value.trim()||"Not entered";
+  }
+
+  function loadState(){
+    for(let i=0;i<4;i++) createRow();
+    recalculate();
+  }
+
+  function clearAll(){
+    if(!confirm("Clear the employee name and all experience rows?")) return;
+
+    nameEl.value="";
+    rowsEl.innerHTML="";
+    for(let i=0;i<4;i++) createRow();
+
+    recalculate();
+  }
+
+  document.getElementById("addRowBtn").addEventListener("click",()=>{
+    createRow();
+    recalculate();
+  });
+
+  document.getElementById("printBtn").addEventListener("click",()=>{
+    recalculate();
+    window.print();
+  });
+
+  document.getElementById("clearBtn").addEventListener("click",clearAll);
+  nameEl.addEventListener("input",recalculate);
+
+  loadState();
+})();
+</script>
+</body>
+</html>
