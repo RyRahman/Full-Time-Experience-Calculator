@@ -7,4 +7,4 @@
 * **Print / PDF Export**: Features print-specific styling to generate clean, professional experience summaries.
 * **Privacy-First**: Runs 100% in your browser—no data is sent to external servers.
 
-Demo: https://ryrahman.github.io /Full-Time-Experience-Calculator
+Demo: https://ryrahman.github.io/Full-Time-Experience-Calculator/
